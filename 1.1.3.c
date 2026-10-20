@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <limits.h>
+#define V 100
+
+int minKey(int key[], bool mstSet[], int vertices) {
+    int min = INT_MAX, min_index;
+
+    for (int v = 0; v < vertices; v++) {
+        if (mstSet[v] == false && key[v] < min) {
+            min = key[v];
+            min_index = v;
+        }
+    }
+
+    return min_index;
+ 
+
+
+
+}
+void printTree(int parent[], int graph[V][V], int vertices) {
+    printf("Edge \tWeight\n");
+    for (int i = 1; i < vertices; i++)
+        printf("%d - %d \t%d \n", parent[i], i, graph[i][parent[i]]);
+}
+
+void prim(int graph[V][V], int vertices) {
+	     int parent[V]; 
+    int key[V];    
+    bool mstSet[V];
+
+    // Initialize all keys as INFINITE and mstSet[] as false
+    for (int i = 0; i < vertices; i++) {
+        key[i] = INT_MAX;
+        mstSet[i] = false;
+    }
+
+    // Always include the first vertex in MST
+    key[0] = 0;
+    parent[0] = -1; 
+
+    // The MST will have exactly (vertices - 1) edges
+    for (int count = 0; count < vertices - 1; count++) {
+        // Pick the minimum key vertex from the set of vertices not yet included
+        int u = minKey(key, mstSet, vertices);
+
+        // Add the picked vertex to the MST Set
+        mstSet[u] = true;
+
+        // Update key value and parent index of the adjacent vertices
+        for (int v = 0; v < vertices; v++) {
+            if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v]) {
+                parent[v] = u;
+                key[v] = graph[u][v];
+            }
+        }
+    }
+
+    // Call the provided printTree function to display output
+    printTree(parent, graph, vertices);
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}
+
+int main() {
+    int vertices;
+    int graph[V][V];
+
+    printf("No of vertices: ");
+    scanf("%d", &vertices);
+
+    printf("Adjacency matrix elements (row wise):\n");
+    for (int i = 0; i < vertices; i++) {
+        for (int j = 0; j < vertices; j++) {
+            scanf("%d", &graph[i][j]);
+        }
+    }
+
+    prim(graph, vertices);
+
+    return 0;
+}
