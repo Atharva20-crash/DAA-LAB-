@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 99
+
+struct node {
+    int vertex;
+    struct node* next;
+};
+typedef struct node* GNODE;
+
+GNODE graph[20];
+int visited[20];
+int queue[MAX], front = -1, rear = -1;
+int n;
+
+void insertQueue(int vertex) {
+    if (rear == MAX - 1)
+        printf("Queue Overflow.\n");
+    else {
+        if (front == -1)
+            front = 0;
+        rear++;
+        queue[rear] = vertex;
+    }
+}
+
+int isEmptyQueue() {
+    return (front == -1 || front > rear);
+}
+
+int deleteQueue() {
+    if (isEmptyQueue()) {
+        printf("Queue Underflow\n");
+        exit(1);
+    }
+    return queue[front++];
+}
+
+void BFS(int v) {
+    // Write your code here
+       insertQueue(v);
+    visited[v] = 1;
+
+    while (!isEmptyQueue()) {
+        int currentVertex = deleteQueue();
+        printf("\n%d", currentVertex);
+
+        GNODE temp = graph[currentVertex];
+        while (temp != NULL) {
+            int adjVertex = temp->vertex;
+            if (visited[adjVertex] == 0) {
+                visited[adjVertex] = 1;
+                insertQueue(adjVertex);
+            }
+            temp = temp->next;
+        }
+    }
+
+    
+    
+    
+    
+}
+
+void main() {
+    int N, E, s, d, i, v;
+    GNODE p, q;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &N);
+    n = N;
+
+    for (i = 0; i < N; i++) {
+        graph[i] = NULL;
+        visited[i] = 0;
+    }
+
+    printf("Enter the number of edges: ");
+    scanf("%d", &E);
+    for (i = 1; i <= E; i++) {
+        printf("Enter source: ");
+        scanf("%d", &s);
+        printf("Enter destination: ");
+        scanf("%d", &d);
+
+        q = (GNODE)malloc(sizeof(struct node));
+        q->vertex = d;
+        q->next = NULL;
+
+        if (graph[s] == NULL) {
+            graph[s] = q;
+        } else {
+            p = graph[s];
+            while (p->next != NULL)
+                p = p->next;
+            p->next = q;
+        }
+    }
+
+    printf("Enter Start Vertex for BFS: ");
+    scanf("%d", &v);
+    printf("BFS of graph: ");
+    BFS(v);
+    printf("\n");
+}
